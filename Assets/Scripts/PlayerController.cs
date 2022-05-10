@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     //WASD movement variables
     private Vector2 movementValue;
     [SerializeField] private float movementSpeed;
+    Inventory inventory;
 
     //Camera movement variables
     [SerializeField] private Camera cam;
@@ -32,6 +33,7 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
         Cursor.lockState = CursorLockMode.Locked;
+        inventory = GetComponent<Inventory>();
     }
 
     private void Update()
@@ -40,31 +42,33 @@ public class PlayerController : MonoBehaviour
         cameraPanValue = playerInput.actions["Look"].ReadValue<Vector2>();
 
         xRotation += cameraPanValue.y * xSensitivity;
-        xRotation = Mathf.Clamp(xRotation, -50f, 60f); // clamped so that the player cannot turn and see behind their back
-    }
+        // clamped so that the player cannot turn
+        // and see behind their back
+        xRotation = Mathf.Clamp(xRotation, -50f, 60f); 
 
-    private void FixedUpdate()
-    {
+
+
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        float inventoryWeight = inventory.getInventoryWeight();
 
-        //convert WASD Vector2 from input into Vector3 and move character
+        //convert WASD Vector2 from input into Vector3 and move character,
+        //also taking inventory weight into account
         Vector3 movementVec3 = transform.right * movementValue.x + transform.forward * movementValue.y;
-        controller.Move(movementVec3 * movementSpeed);
-
+        controller.Move((movementSpeed - inventoryWeight) * Time.deltaTime * movementVec3);
         cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(cameraPanValue.x * ySensitivity * Vector3.up);
 
-        velocity.y += gravity * Time.fixedDeltaTime;
+        velocity.y += gravity * Time.deltaTime;
 
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
 
-        controller.Move(velocity * Time.fixedDeltaTime);
+        controller.Move(velocity * Time.deltaTime);
     }
 
-    public void Jump (InputAction.CallbackContext context)
+    public void Jump(InputAction.CallbackContext context)
     {
         if (context.started && isGrounded)
         {

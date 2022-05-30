@@ -156,7 +156,7 @@ public class PlayerController : MonoBehaviour
             Vector3 pos;
             Ray ray = cam.ScreenPointToRay(crosshairTransform.position);
 
-            bool somethingHit = Physics.Raycast(ray, out hitInfo, 3.5f);
+            bool somethingHit = Physics.Raycast(ray, out hitInfo, 4f);
 
             if (somethingHit)
             {

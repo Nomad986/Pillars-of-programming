@@ -19,8 +19,13 @@ public class Spawner : MonoBehaviour
 
     private List<int> used = new List<int>();
 
+    [SerializeField] private Terrain terrain;
+    private NavMeshBuilder builder;
+
     private void Awake()
     {
+        builder = terrain.GetComponent<NavMeshBuilder>();
+
         foreach(Transform transform in transforms)
         {
             int rand = Random.Range(0, transforms.Count);
@@ -109,6 +114,11 @@ public class Spawner : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void Start()
+    {
+        builder.Build();
     }
 
     private void SpawnPlatinum(GameObject location)

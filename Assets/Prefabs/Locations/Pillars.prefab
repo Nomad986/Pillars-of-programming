@@ -13,12 +13,12 @@ GameObject:
   - component: {fileID: 6438174795204260672}
   - component: {fileID: 2917028751846918620}
   - component: {fileID: 5172227188546667890}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6436745688356167585
 Transform:
@@ -810,12 +810,12 @@ GameObject:
   - component: {fileID: 2027338939534922436}
   - component: {fileID: 2882152197724367842}
   - component: {fileID: 4981560517380487543}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cylinder (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5133470044457662670
 Transform:
@@ -1607,12 +1607,12 @@ GameObject:
   - component: {fileID: 7789023693806189200}
   - component: {fileID: 8301392774635862462}
   - component: {fileID: 6647605763121812634}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cylinder (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5536398560382501720
 Transform:
@@ -2404,12 +2404,12 @@ GameObject:
   - component: {fileID: 1277325873511373527}
   - component: {fileID: 4334098036841271984}
   - component: {fileID: 5587595810216329868}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cylinder (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5368772381916598242
 Transform:
@@ -3201,12 +3201,12 @@ GameObject:
   - component: {fileID: 8524132018007131985}
   - component: {fileID: 381611972502396093}
   - component: {fileID: 544435518091298135}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cylinder (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5706287358429959894
 Transform:
@@ -3998,12 +3998,12 @@ GameObject:
   - component: {fileID: 3526124833331454873}
   - component: {fileID: 3249279632256214509}
   - component: {fileID: 8849623541635228177}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cylinder (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3074853206044757520
 Transform:
@@ -4791,12 +4791,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 763618576911781038}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pillars
   m_TagString: Nonentrable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &763618576911781038
 Transform:

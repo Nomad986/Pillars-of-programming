@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 684417499989119239}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &684417499989119239
 Transform:
@@ -43,12 +43,12 @@ GameObject:
   - component: {fileID: 2460745571234043755}
   - component: {fileID: 2460745571234043764}
   - component: {fileID: 2460745571234043765}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Big house
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2460745571234043753
 Transform:
@@ -4654,12 +4654,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8651842024956121645}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8651842024956121645
 Transform:
@@ -4684,12 +4684,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 840903731934786011}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &840903731934786011
 Transform:
@@ -4714,12 +4714,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5758862372749208404}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5758862372749208404
 Transform:
@@ -4744,12 +4744,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8015777137807919695}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8015777137807919695
 Transform:
@@ -4774,12 +4774,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3337112557972573739}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3337112557972573739
 Transform:
@@ -4804,12 +4804,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4759206151449922202}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4759206151449922202
 Transform:
@@ -4834,12 +4834,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5790492117771379764}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5790492117771379764
 Transform:
@@ -4864,12 +4864,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6707860297067795748}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PlatinumObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6707860297067795748
 Transform:
@@ -4895,12 +4895,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7397751599976860753}
   - component: {fileID: 7550503318813285686}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Big House
   m_TagString: Entrable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7397751599976860753
 Transform:
@@ -4971,12 +4971,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8051990164496738053}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8051990164496738053
 Transform:

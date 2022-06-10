@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7169374611021959599}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7169374611021959599
 Transform:
@@ -39,12 +39,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6957614356168240573}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PlatinumObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6957614356168240573
 Transform:
@@ -69,12 +69,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5216469494067723648}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5216469494067723648
 Transform:
@@ -100,12 +100,12 @@ GameObject:
   m_Component:
   - component: {fileID: 2960871390568379975}
   - component: {fileID: 2056696008578410469}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Prison
   m_TagString: Entrable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2960871390568379975
 Transform:
@@ -175,12 +175,12 @@ GameObject:
   - component: {fileID: 5719905211408649120}
   - component: {fileID: 5539314079669762921}
   - component: {fileID: 6077041017250995130}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2696209794012887770
 Transform:
@@ -1380,12 +1380,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5467860996455144419}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5467860996455144419
 Transform:
@@ -1410,12 +1410,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 234246147063346262}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &234246147063346262
 Transform:
@@ -1440,12 +1440,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2007514493767990769}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2007514493767990769
 Transform:
@@ -1474,12 +1474,12 @@ GameObject:
   - component: {fileID: 4855059885594099646}
   - component: {fileID: 8601784799205572033}
   - component: {fileID: 1855373422014376074}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5064670768514811514
 Transform:
@@ -2679,12 +2679,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8330703565315689835}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8330703565315689835
 Transform:
@@ -2709,12 +2709,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4412495599163111587}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4412495599163111587
 Transform:

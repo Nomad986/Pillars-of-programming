@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 788991987379461365}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Prism
   m_TagString: Nonentrable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &788991987379461365
 Transform:
@@ -44,12 +44,12 @@ GameObject:
   - component: {fileID: 4026113055052023411}
   - component: {fileID: 5560560702538721944}
   - component: {fileID: 4055395724207174217}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Prism
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7019221989128906649
 Transform:

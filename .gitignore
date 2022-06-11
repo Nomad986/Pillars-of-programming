@@ -70,3 +70,66 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+Assets/Animations/Zombie/Zombie Scream.anim.meta
+Assets/Animations/Zombie/Zombie Scream.anim
+Assets/Animations/Zombie/Zombie Running.anim.meta
+Assets/Animations/Zombie/Zombie Running.anim
+Assets/Animations/Zombie/Zombie Reaction Hit.anim.meta
+Assets/Animations/Zombie/Zombie Reaction Hit.anim
+Assets/Animations/Zombie/Zombie Punching.anim.meta
+Assets/Animations/Zombie/Zombie Punching.anim
+Assets/Animations/Zombie/Zombie Kicking.anim.meta
+Assets/Animations/Zombie/Zombie Kicking.anim
+Assets/Animations/Zombie/Zombie Idle.anim.meta
+Assets/Animations/Zombie/Zombie Idle.anim
+Assets/Animations/Zombie/Zombie Dying.anim.meta
+Assets/Animations/Zombie/Zombie Dying.anim
+Assets/Animations/Zombie/Zombie Agonizing.anim.meta
+Assets/Animations/Zombie/Zombie Agonizing.anim
+Assets/Animations/Zombie/Walking.anim.meta
+Assets/Animations/Zombie/Walking.anim
+Assets/Animations/Zombie.meta
+Assets/Animations/Zombie Controller.controller.meta
+Assets/Animations/Zombie Controller.controller
+Assets/Animations/Mixamo/Materials/Ch10_1002_Diffuse.mat.meta
+Assets/Animations/Mixamo/Materials/Ch10_1002_Diffuse.mat
+Assets/Animations/Mixamo/Materials/Ch10_1001_Diffuse.mat.meta
+Assets/Animations/Mixamo/Materials/Ch10_1001_Diffuse.mat
+Assets/Animations/Mixamo/Materials.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Scream.fbx.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Scream.fbx
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbx.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbx
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1002_Specular.png.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1002_Specular.png
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1002_Normal.png.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1002_Normal.png
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1002_Glossiness.png.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1002_Glossiness.png
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1002_Diffuse.png.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1002_Diffuse.png
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1001_Specular.png.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1001_Specular.png
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1001_Normal.png.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1001_Normal.png
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1001_Glossiness.png.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1001_Glossiness.png
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1001_Diffuse.png.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm/Ch10_1001_Diffuse.png
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Running.fbm.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Reaction Hit.fbx.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Reaction Hit.fbx
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Punching.fbx.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Punching.fbx
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Kicking.fbx.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Kicking.fbx
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Idle.fbx.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Idle.fbx
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Dying.fbx.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Dying.fbx
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Agonizing.fbx.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Zombie Agonizing.fbx
+Assets/Animations/Mixamo/Ch10_nonPBR@Walking.fbx.meta
+Assets/Animations/Mixamo/Ch10_nonPBR@Walking.fbx
+Assets/Animations/Mixamo.meta
+Assets/Animations.meta

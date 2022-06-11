@@ -5,39 +5,57 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    private NavMeshAgent agent;
-
     [SerializeField] private float waitTime = 0.2f;
     [SerializeField] private LayerMask playerMask;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float lookDistance;
     [SerializeField] private float angle;
     [SerializeField] private GameObject eyes;
-    private bool canSeePlayer;
     private Vector3 basePosition;
+
+    private NavMeshAgent agent;
+    private Animator animator;
+
+    private bool awareOfPlayer;
+    private bool canSeePlayer;
+    private Vector3 destination;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        canSeePlayer = false;
+        animator = GetComponent<Animator>();
         basePosition = transform.position;
+        awareOfPlayer = false;
     }
 
     private void Update()
     {
-        FieldOfViewCheck();
-    }
+        canSeePlayer = FieldOfViewCheck();
 
-    private IEnumerator FOVRoutine()
-    {
-        while(true)
+        if (!awareOfPlayer && !canSeePlayer)
         {
-            yield return new WaitForSeconds(waitTime);
-            FieldOfViewCheck();
+            destination = basePosition;
         }
+        else if (awareOfPlayer && canSeePlayer)
+        {
+            destination = PlayerManager.instance.player.transform.position;
+        }
+        else if (!awareOfPlayer && canSeePlayer)
+        {
+            awareOfPlayer = true;
+            destination = PlayerManager.instance.player.transform.position;
+        }
+        else if (awareOfPlayer && !canSeePlayer)
+        {
+            //chase for some time, then stop being aware and return to base position
+        }
+
+        animator.SetBool("awareOfPlayer", awareOfPlayer);
+        animator.SetBool("canSeePlayer", canSeePlayer);
+        agent.SetDestination(destination);
     }
 
-    private void FieldOfViewCheck()
+    private bool FieldOfViewCheck()
     {
         Collider[] proximityCheck = Physics.OverlapSphere(eyes.transform.position, lookDistance, playerMask);
 
@@ -59,28 +77,28 @@ public class EnemyController : MonoBehaviour
                 if (!Physics.Raycast(eyes.transform.position, directionToTargetBody, distanceToTargetBody, groundMask) ||
                     !Physics.Raycast(eyes.transform.position, directionToTargetHead, distanceToTargetHead, groundMask))
                 {
-                    canSeePlayer = true;
-                    agent.SetDestination(target.position);
+                    //can see player
                     Debug.DrawRay(eyes.transform.position, directionToTargetHead * 10f, Color.yellow);
                     Debug.DrawRay(eyes.transform.position, directionToTargetBody * 10f, Color.yellow);
+                    return true;
                 }
                 else
                 {
-                    canSeePlayer = false;
-                    agent.SetDestination(basePosition);
+                    //cannot see player
+                    return false;
                 }
 
             }
             else
             {
-                canSeePlayer = false;
-                agent.SetDestination(basePosition);
+                //can see player
+                return false;
             }
         }
         else 
         {
-            canSeePlayer = false;
-            agent.SetDestination(basePosition);
+            //cannot see player
+            return false;
         }
     }
 }

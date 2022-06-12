@@ -5,7 +5,9 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] private float waitTime = 0.2f;
+    [SerializeField] private float runningSpeed;
+    [SerializeField] private float walkingSpeed;
+
     [SerializeField] private LayerMask playerMask;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float lookDistance;
@@ -15,10 +17,29 @@ public class EnemyController : MonoBehaviour
 
     private NavMeshAgent agent;
     private Animator animator;
+    private string currentState;
 
     private bool awareOfPlayer;
     private bool canSeePlayer;
-    private Vector3 destination;
+    private bool inPlace;
+    private bool animationLocked;
+    private IEnumerator lockingFunction;
+    private IEnumerator awareFunction;
+    private bool awareFunctionRunning;
+    [SerializeField] private float searchTime;
+    [SerializeField] private float attackDistance;
+    [SerializeField] private float basePositionOffset;
+
+    const string ZOMBIE_IDLE = "Zombie Idle";
+    const string ZOMBIE_PUNCHING = "Zombie Punching";
+    const string ZOMBIE_KICKING = "Zombie Kicking";
+    const string ZOMBIE_RUNNING = "Zombie Running";
+    const string ZOMBIE_WALKING = "Walking";
+    const string ZOMBIE_SCREAM = "Zombie Scream";
+    const string ZOMBIE_AGONIZING = "Zombie Agonizing";
+    [SerializeField] private float shortenAgonizing;
+    [SerializeField] private float shortenScream;
+    private int losingSightPhase;
 
     private void Awake()
     {
@@ -26,33 +47,121 @@ public class EnemyController : MonoBehaviour
         animator = GetComponent<Animator>();
         basePosition = transform.position;
         awareOfPlayer = false;
+        inPlace = true;
+        animationLocked = false;
+        losingSightPhase = 0;
+        awareFunctionRunning = false;
     }
 
     private void Update()
     {
+        Debug.Log(transform.position);
+        Debug.Log(basePosition);
         canSeePlayer = FieldOfViewCheck();
+        float distance = Vector3.Distance(PlayerManager.instance.player.transform.position,
+            transform.position);
+        inPlace = Vector3.Distance(basePosition, transform.position) < basePositionOffset;
 
-        if (!awareOfPlayer && !canSeePlayer)
+        if (!animationLocked)
         {
-            destination = basePosition;
-        }
-        else if (awareOfPlayer && canSeePlayer)
-        {
-            destination = PlayerManager.instance.player.transform.position;
-        }
-        else if (!awareOfPlayer && canSeePlayer)
-        {
-            awareOfPlayer = true;
-            destination = PlayerManager.instance.player.transform.position;
-        }
-        else if (awareOfPlayer && !canSeePlayer)
-        {
-            //chase for some time, then stop being aware and return to base position
-        }
+            if (distance > attackDistance)
+            {
+                if (!awareOfPlayer && !canSeePlayer)
+                {
+                    //Debug.Log("State 1");
+                    if (inPlace)
+                    {
+                        agent.SetDestination(transform.position);
+                        ChangeAnimationState(ZOMBIE_IDLE);
+                    }
+                    else
+                    {
+                        agent.speed = walkingSpeed;
+                        agent.SetDestination(basePosition);
+                        ChangeAnimationState(ZOMBIE_WALKING);
+                    }
+                }
+                else if (awareOfPlayer && canSeePlayer)
+                {
+                    if (losingSightPhase == 1)
+                    {
+                        losingSightPhase = 0;
+                    }
+                    if (awareFunctionRunning)
+                    {
+                        StopCoroutine(awareFunction);
+                        awareFunctionRunning = false;
+                    }
 
-        animator.SetBool("awareOfPlayer", awareOfPlayer);
-        animator.SetBool("canSeePlayer", canSeePlayer);
-        agent.SetDestination(destination);
+                    //Debug.Log("State 2");
+                    agent.speed = runningSpeed;
+                    agent.SetDestination(PlayerManager.instance.player.transform.position);
+                    ChangeAnimationState(ZOMBIE_RUNNING);
+                }
+                else if (!awareOfPlayer && canSeePlayer)
+                {
+                    //Debug.Log("State 3");
+                    awareOfPlayer = true;
+                    ChangeAnimationState(ZOMBIE_SCREAM);
+                    lockingFunction = LockAnimation();
+                    StartCoroutine(lockingFunction);
+                }
+                else if (awareOfPlayer && !canSeePlayer && losingSightPhase == 0)
+                {
+                    //Debug.Log("State 4");
+                    agent.SetDestination(transform.position);
+                    ChangeAnimationState(ZOMBIE_AGONIZING);
+                    lockingFunction = LockAnimation();
+                    StartCoroutine(lockingFunction);
+                    losingSightPhase = 1;
+                }
+                else if (awareOfPlayer && !canSeePlayer && losingSightPhase == 1)
+                {
+                    awareFunction = SearchCountdown();
+                    StartCoroutine(awareFunction);
+                    agent.speed = walkingSpeed;
+                    agent.SetDestination(PlayerManager.instance.player.transform.position);
+                    ChangeAnimationState(ZOMBIE_WALKING);
+                }
+            }
+            else
+            {
+                //attack
+            }
+        }
+        Debug.Log(inPlace);
+    }
+
+    private IEnumerator SearchCountdown()
+    {
+        awareFunctionRunning = true;
+        yield return new WaitForSeconds(searchTime);
+        awareOfPlayer = false;
+        losingSightPhase = 0;
+        awareFunctionRunning = false;
+    }
+
+    private IEnumerator LockAnimation()
+    {
+        animationLocked = true;
+        if(currentState == ZOMBIE_AGONIZING)
+        {
+            yield return new WaitForSeconds(11.6f - shortenAgonizing);
+        }
+        else if (currentState == ZOMBIE_SCREAM)
+        {
+            yield return new WaitForSeconds(2.8f - shortenScream);
+        }
+        animationLocked = false;
+    }
+
+    private void ChangeAnimationState(string newState)
+    {
+        if (currentState == newState) return;
+
+        animator.Play(newState);
+
+        currentState = newState;
     }
 
     private bool FieldOfViewCheck()

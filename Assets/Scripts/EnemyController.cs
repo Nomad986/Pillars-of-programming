@@ -25,6 +25,7 @@ public class EnemyController : MonoBehaviour
     private bool animationLocked;
     private IEnumerator lockingFunction;
     private IEnumerator awareFunction;
+    private IEnumerator attackFunction;
     private bool awareFunctionRunning;
     [SerializeField] private float searchTime;
     [SerializeField] private float attackDistance;
@@ -39,7 +40,12 @@ public class EnemyController : MonoBehaviour
     const string ZOMBIE_AGONIZING = "Zombie Agonizing";
     [SerializeField] private float shortenAgonizing;
     [SerializeField] private float shortenScream;
+    [SerializeField] private float waitForPunchCast;
+    [SerializeField] private float waitForKickCast;
     private int losingSightPhase;
+
+    [SerializeField] private Transform attackPoint;
+    [SerializeField] private float attackRange;
 
     private void Awake()
     {
@@ -55,8 +61,6 @@ public class EnemyController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(transform.position);
-        Debug.Log(basePosition);
         canSeePlayer = FieldOfViewCheck();
         float distance = Vector3.Distance(PlayerManager.instance.player.transform.position,
             transform.position);
@@ -103,7 +107,7 @@ public class EnemyController : MonoBehaviour
                     //Debug.Log("State 3");
                     awareOfPlayer = true;
                     ChangeAnimationState(ZOMBIE_SCREAM);
-                    lockingFunction = LockAnimation();
+                    lockingFunction = LockAnimation(false);
                     StartCoroutine(lockingFunction);
                 }
                 else if (awareOfPlayer && !canSeePlayer && losingSightPhase == 0)
@@ -111,7 +115,7 @@ public class EnemyController : MonoBehaviour
                     //Debug.Log("State 4");
                     agent.SetDestination(transform.position);
                     ChangeAnimationState(ZOMBIE_AGONIZING);
-                    lockingFunction = LockAnimation();
+                    lockingFunction = LockAnimation(false);
                     StartCoroutine(lockingFunction);
                     losingSightPhase = 1;
                 }
@@ -126,10 +130,81 @@ public class EnemyController : MonoBehaviour
             }
             else
             {
-                //attack
+                agent.SetDestination(transform.position);
+                int randomAttack = Random.Range(0, 2);
+                if (randomAttack == 0)
+                {
+                    ChangeAnimationState(ZOMBIE_PUNCHING);
+                    lockingFunction = LockAnimation(true);
+                    attackFunction = CastAttack(0);
+                }
+                else if (randomAttack == 1)
+                {
+                    ChangeAnimationState(ZOMBIE_KICKING);
+                    lockingFunction = LockAnimation(true);
+                    attackFunction = CastAttack(1);
+                }
+                StartCoroutine(lockingFunction);
+                StartCoroutine(attackFunction);
             }
         }
-        Debug.Log(inPlace);
+
+        bool playerWithinDistance =
+                Vector3.Distance(transform.position, PlayerManager.instance.player.transform.position)
+                < lookDistance;
+
+        if (awareOfPlayer && playerWithinDistance)
+        {
+            FacePlayer();
+        }
+
+        //Debug.Log(inPlace);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+    }
+
+    private void FacePlayer()
+    {
+        Vector3 direction = 
+            (PlayerManager.instance.player.transform.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        transform.rotation = lookRotation;
+    }
+
+    private void CheckAttack(int randomAttack)
+    {
+        Collider[] hit = Physics.OverlapSphere(attackPoint.position, attackRange, playerMask);
+
+        if (hit.Length > 0)
+        {
+            if (randomAttack == 0)
+            {
+                Debug.Log("HIT");
+                hit[0].GetComponentInParent<PlayerController>().ReceiveDamage(10);
+            }
+            else if (randomAttack == 1)
+            {
+                hit[0].GetComponentInParent<PlayerController>().ReceiveDamage(25);
+                Debug.Log("HIT");
+            }
+        }
+    }
+
+    private IEnumerator CastAttack(int randomAttack)
+    {
+        if (randomAttack == 0)
+        {
+            yield return new WaitForSeconds(waitForPunchCast);
+            CheckAttack(0);
+        }
+        else if (randomAttack == 1)
+        {
+            yield return new WaitForSeconds(waitForKickCast);
+            CheckAttack(1);
+        }
     }
 
     private IEnumerator SearchCountdown()
@@ -141,18 +216,31 @@ public class EnemyController : MonoBehaviour
         awareFunctionRunning = false;
     }
 
-    private IEnumerator LockAnimation()
+    private IEnumerator LockAnimation(bool returnToIdle)
     {
         animationLocked = true;
         if(currentState == ZOMBIE_AGONIZING)
         {
-            yield return new WaitForSeconds(11.6f - shortenAgonizing);
+            yield return new WaitForSeconds(11.633f - shortenAgonizing);
         }
         else if (currentState == ZOMBIE_SCREAM)
         {
             yield return new WaitForSeconds(2.8f - shortenScream);
         }
+        else if (currentState == ZOMBIE_PUNCHING)
+        {
+            yield return new WaitForSeconds(3.833f);
+        }
+        else if (currentState == ZOMBIE_KICKING)
+        {
+            yield return new WaitForSeconds(3.367f);
+        }
         animationLocked = false;
+
+        if (returnToIdle)
+        {
+            ChangeAnimationState(ZOMBIE_IDLE);
+        }
     }
 
     private void ChangeAnimationState(string newState)

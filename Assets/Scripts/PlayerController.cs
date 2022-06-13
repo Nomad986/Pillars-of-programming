@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     //common variables
     private CharacterController controller;
     private PlayerInput playerInput;
+    [SerializeField] private int health;
 
     //WASD movement variables
     private Vector2 movementValue;
@@ -196,6 +197,11 @@ public class PlayerController : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public void ReceiveDamage(int damage)
+    {
+        health -= damage;
     }
 
     private void HandleCamera()

@@ -46,6 +46,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject silverPrefab;
     [SerializeField] private GameObject copperPrefab;
 
+    //Shooting variables
+    [SerializeField] private ParticleSystem muzzleFlash;
+    [SerializeField] private ParticleSystem enemyHitEffect;
+    [SerializeField] private ParticleSystem otherHitEffect;
+    [SerializeField] private GameObject gun;
+    [SerializeField] private float gunRange;
+    [SerializeField] private float upTurningRate;
+    [SerializeField] private float downTurningRate;
+    private Quaternion baseRotation;
+    [SerializeField] private Vector3 rotationAfterShot;
+    private Quaternion quaternionRotation;
+    bool recoilFirstPhase;
+    bool recoilSecondPhase;
+
 
     private void Awake()
     {
@@ -56,10 +70,33 @@ public class PlayerController : MonoBehaviour
         selectionActive = false;
         selectedMetal = 0;
         boxCoroutine = ShowBox(0);
+        baseRotation = gun.transform.localRotation;
+        quaternionRotation = Quaternion.Euler(rotationAfterShot);
+        recoilFirstPhase = false;
+        recoilSecondPhase = false;
     }
 
     private void Update()
     {
+        if (recoilFirstPhase)
+        {
+            RotateGunUp();
+            if (gun.transform.localRotation == quaternionRotation)
+            {
+                recoilFirstPhase = false;
+                recoilSecondPhase = true;
+            }
+        }
+
+        if (recoilSecondPhase)
+        {
+            RotateGunDown();
+            if (gun.transform.localRotation == baseRotation)
+            {
+                recoilSecondPhase = false;
+            }
+        }
+
         float inventoryWeight = inventory.GetInventoryWeight();
 
         CastInteractionRay();
@@ -74,6 +111,32 @@ public class PlayerController : MonoBehaviour
         if (context.started && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+    }
+
+    public void Shoot(InputAction.CallbackContext context)
+    {
+        if (context.started && !recoilFirstPhase && !recoilSecondPhase)
+        {
+            muzzleFlash.Play();
+            recoilFirstPhase = true;
+
+            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit,
+                gunRange))
+            {
+                if (hit.collider.CompareTag("Enemy"))
+                {
+                    ParticleSystem Impact = Instantiate(enemyHitEffect, hit.point, 
+                        Quaternion.LookRotation(hit.normal));
+                    Destroy(Impact, 2f);
+                }
+                else
+                {
+                    ParticleSystem Impact = Instantiate(otherHitEffect, hit.point,
+                        Quaternion.LookRotation(hit.normal));
+                    Destroy(Impact, 2f);
+                }
+            }
         }
     }
 
@@ -202,6 +265,18 @@ public class PlayerController : MonoBehaviour
     public void ReceiveDamage(int damage)
     {
         health -= damage;
+    }
+
+    private void RotateGunUp()
+    {
+        gun.transform.localRotation = Quaternion.RotateTowards(gun.transform.localRotation,
+                quaternionRotation, upTurningRate * Time.deltaTime);
+    }
+
+    private void RotateGunDown()
+    {
+        gun.transform.localRotation = Quaternion.RotateTowards(gun.transform.localRotation,
+                baseRotation, downTurningRate * Time.deltaTime);
     }
 
     private void HandleCamera()

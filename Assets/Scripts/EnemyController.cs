@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -23,10 +22,12 @@ public class EnemyController : MonoBehaviour
     private bool canSeePlayer;
     private bool inPlace;
     private bool animationLocked;
+    private bool staggered;
     private IEnumerator lockingFunction;
     private IEnumerator awareFunction;
     private IEnumerator attackFunction;
     private bool awareFunctionRunning;
+    private bool attackFunctionRunning;
     [SerializeField] private float searchTime;
     [SerializeField] private float attackDistance;
     [SerializeField] private float basePositionOffset;
@@ -38,6 +39,9 @@ public class EnemyController : MonoBehaviour
     const string ZOMBIE_WALKING = "Walking";
     const string ZOMBIE_SCREAM = "Zombie Scream";
     const string ZOMBIE_AGONIZING = "Zombie Agonizing";
+    const string ZOMBIE_DYING = "Zombie Dying";
+    const string ZOMBIE_BACK_HIT = "Shove Reaction";
+    const string ZOMBIE_FRONT_HIT = "Zombie Reaction Hit";
     [SerializeField] private float shortenAgonizing;
     [SerializeField] private float shortenScream;
     [SerializeField] private float waitForPunchCast;
@@ -57,6 +61,8 @@ public class EnemyController : MonoBehaviour
         animationLocked = false;
         losingSightPhase = 0;
         awareFunctionRunning = false;
+        attackFunctionRunning = false;
+        staggered = false;
     }
 
     private void Update()
@@ -68,6 +74,8 @@ public class EnemyController : MonoBehaviour
 
         if (!animationLocked)
         {
+            staggered = false;
+
             if (distance > attackDistance)
             {
                 if (!awareOfPlayer && !canSeePlayer)
@@ -107,7 +115,7 @@ public class EnemyController : MonoBehaviour
                     //Debug.Log("State 3");
                     awareOfPlayer = true;
                     ChangeAnimationState(ZOMBIE_SCREAM);
-                    lockingFunction = LockAnimation(false);
+                    lockingFunction = LockAnimation(false, 2.1f);
                     StartCoroutine(lockingFunction);
                 }
                 else if (awareOfPlayer && !canSeePlayer && losingSightPhase == 0)
@@ -115,7 +123,7 @@ public class EnemyController : MonoBehaviour
                     //Debug.Log("State 4");
                     agent.SetDestination(transform.position);
                     ChangeAnimationState(ZOMBIE_AGONIZING);
-                    lockingFunction = LockAnimation(false);
+                    lockingFunction = LockAnimation(false, 8.233f);
                     StartCoroutine(lockingFunction);
                     losingSightPhase = 1;
                 }
@@ -135,13 +143,13 @@ public class EnemyController : MonoBehaviour
                 if (randomAttack == 0)
                 {
                     ChangeAnimationState(ZOMBIE_PUNCHING);
-                    lockingFunction = LockAnimation(true);
+                    lockingFunction = LockAnimation(true, 3.833f);
                     attackFunction = CastAttack(0);
                 }
                 else if (randomAttack == 1)
                 {
                     ChangeAnimationState(ZOMBIE_KICKING);
-                    lockingFunction = LockAnimation(true);
+                    lockingFunction = LockAnimation(true, 3.367f);
                     attackFunction = CastAttack(1);
                 }
                 StartCoroutine(lockingFunction);
@@ -153,12 +161,11 @@ public class EnemyController : MonoBehaviour
                 Vector3.Distance(transform.position, PlayerManager.instance.player.transform.position)
                 < lookDistance;
 
-        if (awareOfPlayer && playerWithinDistance)
+        if (awareOfPlayer && playerWithinDistance && currentState != ZOMBIE_DYING)
         {
             FacePlayer();
         }
 
-        //Debug.Log(inPlace);
     }
 
     private void OnDrawGizmosSelected()
@@ -195,6 +202,7 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator CastAttack(int randomAttack)
     {
+        attackFunctionRunning = true;
         if (randomAttack == 0)
         {
             yield return new WaitForSeconds(waitForPunchCast);
@@ -205,6 +213,7 @@ public class EnemyController : MonoBehaviour
             yield return new WaitForSeconds(waitForKickCast);
             CheckAttack(1);
         }
+        attackFunctionRunning = false;
     }
 
     private IEnumerator SearchCountdown()
@@ -216,25 +225,10 @@ public class EnemyController : MonoBehaviour
         awareFunctionRunning = false;
     }
 
-    private IEnumerator LockAnimation(bool returnToIdle)
+    private IEnumerator LockAnimation(bool returnToIdle, float time)
     {
         animationLocked = true;
-        if(currentState == ZOMBIE_AGONIZING)
-        {
-            yield return new WaitForSeconds(11.633f - shortenAgonizing);
-        }
-        else if (currentState == ZOMBIE_SCREAM)
-        {
-            yield return new WaitForSeconds(2.8f - shortenScream);
-        }
-        else if (currentState == ZOMBIE_PUNCHING)
-        {
-            yield return new WaitForSeconds(3.833f);
-        }
-        else if (currentState == ZOMBIE_KICKING)
-        {
-            yield return new WaitForSeconds(3.367f);
-        }
+        yield return new WaitForSeconds(time);
         animationLocked = false;
 
         if (returnToIdle)
@@ -297,5 +291,49 @@ public class EnemyController : MonoBehaviour
             //cannot see player
             return false;
         }
+    }
+
+    public void Stagger(string direction)
+    {
+        if (!staggered && currentState != ZOMBIE_DYING)
+        {
+            agent.SetDestination(transform.position);
+
+            if (animationLocked)
+            {
+                StopCoroutine(lockingFunction);
+            }
+
+            if (attackFunctionRunning)
+            {
+                StopCoroutine(attackFunction);
+                attackFunctionRunning = false;
+            }
+
+            if (direction == "Front")
+            {
+                lockingFunction = LockAnimation(false, 2.167f);
+                StartCoroutine(lockingFunction);
+                ChangeAnimationState(ZOMBIE_FRONT_HIT);
+
+            }
+            else if (direction == "Back")
+            {
+                lockingFunction = LockAnimation(false, 3f);
+                StartCoroutine(lockingFunction);
+                ChangeAnimationState(ZOMBIE_BACK_HIT);
+            }
+
+            staggered = true;
+        }
+    }
+
+    public void Die()
+    {
+        StopAllCoroutines();
+        agent.enabled = false;
+        ChangeAnimationState(ZOMBIE_DYING);
+        animationLocked = true;
+        Destroy(this.gameObject, 10f);
     }
 }

@@ -9,6 +9,7 @@ TagManager:
   - Nonentrable
   - FxTemporaire
   - Enemy
+  - Enemy Head
   layers:
   - Default
   - TransparentFX

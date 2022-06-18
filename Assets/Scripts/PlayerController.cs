@@ -54,11 +54,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gunRange;
     [SerializeField] private float upTurningRate;
     [SerializeField] private float downTurningRate;
-    private Quaternion baseRotation;
+    [SerializeField] private float playerTurningRate;
+    private Quaternion gunBaseRotation;
     [SerializeField] private Vector3 rotationAfterShot;
-    private Quaternion quaternionRotation;
+    [SerializeField] private float rotationAfterHit;
+    private Quaternion gunQuaternionRotation;
     bool recoilFirstPhase;
     bool recoilSecondPhase;
+
+    Quaternion baseRotation = new();
+    Vector3 targetRotation;
+    Quaternion quaternionTargetRotation = new();
+    bool playerHitFirstPhase;
+    bool playerHitSecondPhase;
+    bool playerHitThirdPhase;
+
+
+
 
 
     private void Awake()
@@ -70,18 +82,34 @@ public class PlayerController : MonoBehaviour
         selectionActive = false;
         selectedMetal = 0;
         boxCoroutine = ShowBox(0);
-        baseRotation = gun.transform.localRotation;
-        quaternionRotation = Quaternion.Euler(rotationAfterShot);
+        gunBaseRotation = gun.transform.localRotation;
+        gunQuaternionRotation = Quaternion.Euler(rotationAfterShot);
         recoilFirstPhase = false;
         recoilSecondPhase = false;
+        playerHitFirstPhase = false;
+        playerHitSecondPhase = false;
+        playerHitThirdPhase = false;
     }
 
     private void Update()
     {
+        //Debug.Log(playerHitFirstPhase);
+        // Debug.Log(playerHitSecondPhase);
+        //Debug.Log(playerHitThirdPhase);
+
+        Debug.Log(transform.rotation);
+        Debug.Log(transform.localRotation);
+
+        if (playerHitFirstPhase || playerHitSecondPhase || playerHitThirdPhase)
+        {
+            RotateOnHit();
+        }
+
+        
         if (recoilFirstPhase)
         {
             RotateGunUp();
-            if (gun.transform.localRotation == quaternionRotation)
+            if (gun.transform.localRotation == gunQuaternionRotation)
             {
                 recoilFirstPhase = false;
                 recoilSecondPhase = true;
@@ -91,7 +119,7 @@ public class PlayerController : MonoBehaviour
         if (recoilSecondPhase)
         {
             RotateGunDown();
-            if (gun.transform.localRotation == baseRotation)
+            if (gun.transform.localRotation == gunBaseRotation)
             {
                 recoilSecondPhase = false;
             }
@@ -124,18 +152,31 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit,
                 gunRange))
             {
-                if (hit.collider.CompareTag("Enemy"))
+                if (hit.collider.CompareTag("Enemy") )
                 {
-                    ParticleSystem Impact = Instantiate(enemyHitEffect, hit.point, 
-                        Quaternion.LookRotation(hit.normal));
-                    Destroy(Impact, 2f);
+                    float angle = Vector3.Angle(hit.collider.gameObject.transform.forward,
+                        hit.normal);
+
+                    if (angle >= 90f)
+                    {
+                        hit.collider.GetComponentInParent<EnemyController>().Stagger("Back");
+                    }
+                    else
+                    {
+                        hit.collider.GetComponentInParent<EnemyController>().Stagger("Front");
+                    }
+
+                    Instantiate(enemyHitEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                }
+                else if (hit.collider.CompareTag("Enemy Head"))
+                {
+                    Instantiate(enemyHitEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                    hit.collider.GetComponentInParent<EnemyController>().Die();
                 }
                 else
                 {
-                    ParticleSystem Impact = Instantiate(otherHitEffect, hit.point,
-                        Quaternion.LookRotation(hit.normal));
-                    Destroy(Impact, 2f);
-                }
+                    Instantiate(otherHitEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                }    
             }
         }
     }
@@ -265,19 +306,67 @@ public class PlayerController : MonoBehaviour
     public void ReceiveDamage(int damage)
     {
         health -= damage;
+        if (health <= 0)
+        {
+            Die();
+            return;
+        }
+        playerHitFirstPhase = true;
+    }
+
+    private void RotateOnHit()
+    {
+        if (playerHitFirstPhase)
+        {
+            baseRotation = transform.rotation;
+            Vector3 rotationVec3 = transform.rotation.eulerAngles;
+            targetRotation = new(rotationVec3.x, rotationVec3.y, rotationVec3.z + rotationAfterHit);
+            quaternionTargetRotation = Quaternion.Euler(targetRotation);
+            playerHitFirstPhase = false;
+            playerHitSecondPhase = true;
+        }
+
+        if (playerHitSecondPhase)
+        {
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, quaternionTargetRotation,
+                playerTurningRate * Time.deltaTime);
+
+            if (transform.rotation == quaternionTargetRotation)
+            {
+                playerHitSecondPhase = false;
+                playerHitThirdPhase = true;
+            }
+        }
+
+        if (playerHitThirdPhase)
+        {
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, baseRotation,
+                            playerTurningRate * Time.deltaTime);
+
+            if (transform.rotation == baseRotation)
+            {
+                playerHitThirdPhase = false;
+            }
+        }
+    }
+
+    private void Die()
+    {
+
     }
 
     private void RotateGunUp()
     {
         gun.transform.localRotation = Quaternion.RotateTowards(gun.transform.localRotation,
-                quaternionRotation, upTurningRate * Time.deltaTime);
+                gunQuaternionRotation, upTurningRate * Time.deltaTime);
     }
 
     private void RotateGunDown()
     {
         gun.transform.localRotation = Quaternion.RotateTowards(gun.transform.localRotation,
-                baseRotation, downTurningRate * Time.deltaTime);
+                gunBaseRotation, downTurningRate * Time.deltaTime);
     }
+
 
     private void HandleCamera()
     {

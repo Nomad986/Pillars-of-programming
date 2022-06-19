@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController controller;
     private PlayerInput playerInput;
     [SerializeField] private int health;
+    [SerializeField] GameObject deathUI;
 
     //WASD movement variables
     private Vector2 movementValue;
@@ -68,6 +69,8 @@ public class PlayerController : MonoBehaviour
     bool playerHitFirstPhase;
     bool playerHitSecondPhase;
     bool playerHitThirdPhase;
+
+    [SerializeField] private Slider healthSlider;
 
 
 
@@ -308,9 +311,11 @@ public class PlayerController : MonoBehaviour
         health -= damage;
         if (health <= 0)
         {
+            health = 0;
+            healthSlider.value = health;
             Die();
-            return;
         }
+        healthSlider.value = health;
         playerHitFirstPhase = true;
     }
 
@@ -352,7 +357,9 @@ public class PlayerController : MonoBehaviour
 
     private void Die()
     {
-
+        Time.timeScale = 0;
+        deathUI.SetActive(true);
+        Destroy(this);
     }
 
     private void RotateGunUp()

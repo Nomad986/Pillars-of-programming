@@ -10,28 +10,28 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private LayerMask playerMask;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float lookDistance;
-    [SerializeField] private float angle;
-    [SerializeField] private GameObject eyes;
+    [SerializeField] private float angle;   //angle of vision in front of the enemy
+    [SerializeField] private GameObject eyes; //gameobject positioned roughly there where eyes should be
     private Vector3 basePosition;
 
     private NavMeshAgent agent;
     private Animator animator;
-    private string currentState;
 
-    private bool awareOfPlayer;
+    private bool awareOfPlayer; //enemy can be aware of the player for some time after player escapes the field of vision
     private bool canSeePlayer;
-    private bool inPlace;
-    private bool animationLocked;
-    private bool staggered;
-    private IEnumerator lockingFunction;
-    private IEnumerator awareFunction;
-    private IEnumerator attackFunction;
+    private bool inPlace; //enemy in its base position
+    private bool animationLocked; //true when the animation that is currently playing should not be interrupted unless by getting hit
+    private bool staggered; // staggered by getting shot in bodypart other than head
+    private IEnumerator lockingFunction; // function that locks the animation that should not be interrupted
+    private IEnumerator awareFunction; // function that sets awareOfPlayer to false some time after player has escaped the FOV
+    private IEnumerator attackFunction; 
     private bool awareFunctionRunning;
     private bool attackFunctionRunning;
     [SerializeField] private float searchTime;
     [SerializeField] private float attackDistance;
     [SerializeField] private float basePositionOffset;
 
+    private string currentState; // current animation state
     const string ZOMBIE_IDLE = "Zombie Idle";
     const string ZOMBIE_PUNCHING = "Zombie Punching";
     const string ZOMBIE_KICKING = "Zombie Kicking";
@@ -43,7 +43,8 @@ public class EnemyController : MonoBehaviour
     const string ZOMBIE_BACK_HIT = "Shove Reaction";
     const string ZOMBIE_FRONT_HIT = "Zombie Reaction Hit";
     [SerializeField] private float shortenAgonizing;
-    [SerializeField] private float shortenScream;
+    [SerializeField] private float shortenScream; //shorten animations for better game feel
+    private AudioSource screamSound;
     [SerializeField] private float waitForPunchCast;
     [SerializeField] private float waitForKickCast;
     private int losingSightPhase;
@@ -55,6 +56,7 @@ public class EnemyController : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        screamSound = GetComponent<AudioSource>();
         basePosition = transform.position;
         awareOfPlayer = false;
         inPlace = true;
@@ -115,6 +117,7 @@ public class EnemyController : MonoBehaviour
                     //Debug.Log("State 3");
                     awareOfPlayer = true;
                     ChangeAnimationState(ZOMBIE_SCREAM);
+                    screamSound.Play();
                     lockingFunction = LockAnimation(false, 2.1f);
                     StartCoroutine(lockingFunction);
                 }

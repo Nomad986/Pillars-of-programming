@@ -2,52 +2,59 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     //common variables
+    [Header("common")]
+    [SerializeField] private int health;
     private CharacterController controller;
     private PlayerInput playerInput;
-    [SerializeField] private int health;
-    [SerializeField] GameObject deathUI;
 
     //WASD movement variables
-    private Vector2 movementValue;
+    [Header("WASD movement")]
     [SerializeField] private float movementSpeed;
+    private Vector2 movementValue;
     private Inventory inventory; // also used in interaction, and in selection and drop
 
-    //Camera movement variables
+    //Camera panning variables
+    [Header("Camera panning")]
     [SerializeField] private Camera cam;
-    private Vector2 cameraPanValue;
     [SerializeField] private float xSensitivity;
     [SerializeField] private float ySensitivity;
+    private Vector2 cameraPanValue;
     private float xRotation; // rotation of camera around x-axis
 
-    //Jump and gravity variables
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundDistance;
+    //Jumping and gravity variables
+    [Header("Jumping and gravity")]
+    [SerializeField] private Transform groundCheck; //GameObject that checks for ground
+    [SerializeField] private float groundDistance;  //with Physics.CheckSphere(), using groundDistance as radius
     [SerializeField] private LayerMask groundMask;
+    [SerializeField] private float jumpHeight;
     private bool isGrounded;
     private readonly float gravity = -9.81f;
     private Vector3 velocity; // downward velocity
-    [SerializeField] private float jumpHeight;
 
     //Interaction variables
+    [Header("Interaction")]
     [SerializeField] private Transform crosshairTransform;
     [SerializeField] private GrabButtonScript grabButtonScript;
-    private GameObject lookingAt = null;
+    private GameObject lookingAt = null; //object that the player is currently looking at
 
-    //Selection and drop variables
-    [SerializeField] private RectTransform boxTransform;
-    private bool selectionActive;   //while active, selection box is displayed
-    private int selectedMetal;  //0 - platinum, 1 - gold and so on up to 3
-    private IEnumerator boxCoroutine;
+    //Selection and dropping variables
+    [Header("Selection and dropping")]
+    [SerializeField] private RectTransform boxTransform; //Red box that marks the selected metal in inventory
     [SerializeField] private GameObject goldPrefab;
     [SerializeField] private GameObject platinumPrefab;
     [SerializeField] private GameObject silverPrefab;
     [SerializeField] private GameObject copperPrefab;
+    private bool selectionActive;   //while active, selection box is displayed
+    private int selectedMetal;  //0 - platinum, 1 - gold and so on up to 3
+    private IEnumerator boxCoroutine; //Coroutine that disables the selectionBox after set time
 
-    //Shooting variables
+    //Shooting variables (turning rates and rotations for recoil)
+    [Header("Shooting")]
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private ParticleSystem enemyHitEffect;
     [SerializeField] private ParticleSystem otherHitEffect;
@@ -55,26 +62,31 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gunRange;
     [SerializeField] private float upTurningRate;
     [SerializeField] private float downTurningRate;
-    [SerializeField] private float playerTurningRate;
-    private Quaternion gunBaseRotation;
     [SerializeField] private Vector3 rotationAfterShot;
-    [SerializeField] private float rotationAfterHit;
+    [SerializeField] private AudioSource gunAudioSource;
+    private Quaternion gunBaseRotation;
     private Quaternion gunQuaternionRotation;
-    bool recoilFirstPhase;
-    bool recoilSecondPhase;
+    private bool recoilFirstPhase;
+    private bool recoilSecondPhase;
 
-    Quaternion baseRotation = new();
-    Vector3 targetRotation;
-    Quaternion quaternionTargetRotation = new();
-    bool playerHitFirstPhase;
-    bool playerHitSecondPhase;
-    bool playerHitThirdPhase;
-
+    //Health, rotating when hit and dying
+    [Header("Health, rotating when hit and dying")]
+    [SerializeField] private float playerTurningRate;
+    [SerializeField] private float rotationAfterHit;
     [SerializeField] private Slider healthSlider;
+    private AudioSource playerAudioSource;
+    private bool playerHitFirstPhase;
+    private bool playerHitSecondPhase;
+    private bool playerHitThirdPhase;
+    private bool dead; //also used when winUI or deathUI is displayed to disable moving
+    private Quaternion baseRotation = new();
+    private Vector3 targetRotation;
+    private Quaternion quaternionTargetRotation = new();
 
-
-
-
+    //UI
+    [SerializeField] private GameObject pauseMenu;
+    [SerializeField] GameObject deathUI;
+    [SerializeField] GameObject winUI;
 
     private void Awake()
     {
@@ -82,6 +94,7 @@ public class PlayerController : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         Cursor.lockState = CursorLockMode.Locked;
         inventory = GetComponent<Inventory>();
+        playerAudioSource = GetComponent<AudioSource>();
         selectionActive = false;
         selectedMetal = 0;
         boxCoroutine = ShowBox(0);
@@ -92,17 +105,11 @@ public class PlayerController : MonoBehaviour
         playerHitFirstPhase = false;
         playerHitSecondPhase = false;
         playerHitThirdPhase = false;
+        dead = false;
     }
 
     private void Update()
     {
-        //Debug.Log(playerHitFirstPhase);
-        // Debug.Log(playerHitSecondPhase);
-        //Debug.Log(playerHitThirdPhase);
-
-        Debug.Log(transform.rotation);
-        Debug.Log(transform.localRotation);
-
         if (playerHitFirstPhase || playerHitSecondPhase || playerHitThirdPhase)
         {
             RotateOnHit();
@@ -128,18 +135,57 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        float inventoryWeight = inventory.GetInventoryWeight();
-
         CastInteractionRay();
-        HandleGravity(inventoryWeight);
-        HandleMovement(inventoryWeight);
+        HandleGravity(0);
+        HandleMovement(0);
         HandleCamera(); //rotation of whole player model is also handled in this function
+    }
+
+    public void PauseGame(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            if (!dead)
+            {
+                Time.timeScale = 0;
+                dead = true;
+                Cursor.lockState = CursorLockMode.None;
+                pauseMenu.SetActive(true);
+            }
+            else if (dead && !winUI.activeInHierarchy && !deathUI.activeInHierarchy)
+            {
+                Time.timeScale = 1;
+                dead = false;
+                Cursor.lockState = CursorLockMode.Locked;
+                pauseMenu.SetActive(false);
+            }
+        }
+    }
+
+    // additional function for exiting pause with clicking on "resume" button
+    // instead of clicking escape
+    public void PauseGameOnClick() 
+    {
+            if (!dead)
+            {
+                Time.timeScale = 0;
+                dead = true;
+                Cursor.lockState = CursorLockMode.None;
+                pauseMenu.SetActive(true);
+            }
+            else if (dead && !winUI.activeInHierarchy && !deathUI.activeInHierarchy)
+            {
+                Time.timeScale = 1;
+                dead = false;
+                Cursor.lockState = CursorLockMode.Locked;
+                pauseMenu.SetActive(false);
+            }
     }
 
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (context.started && isGrounded)
+        if (context.started && isGrounded && !dead)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
@@ -147,8 +193,19 @@ public class PlayerController : MonoBehaviour
 
     public void Shoot(InputAction.CallbackContext context)
     {
+        //left-mouse exits to menu when the player beat the game or died
+        if (context.canceled && dead && (winUI.activeInHierarchy || deathUI.activeInHierarchy))
+        {
+            SceneManager.LoadScene(0);
+            Time.timeScale = 1;
+            Cursor.lockState = CursorLockMode.None;
+            return;
+        }
+
+        //standard functionality
         if (context.started && !recoilFirstPhase && !recoilSecondPhase)
         {
+            gunAudioSource.PlayOneShot(gunAudioSource.clip, 1f);
             muzzleFlash.Play();
             recoilFirstPhase = true;
 
@@ -157,6 +214,8 @@ public class PlayerController : MonoBehaviour
             {
                 if (hit.collider.CompareTag("Enemy") )
                 {
+                    //different animations are played depending on whether the enemy was hit
+                    //in his front or back
                     float angle = Vector3.Angle(hit.collider.gameObject.transform.forward,
                         hit.normal);
 
@@ -186,7 +245,7 @@ public class PlayerController : MonoBehaviour
 
     public void Interact(InputAction.CallbackContext context)
     {
-        if (lookingAt!= null && context.started)
+        if (lookingAt!= null && context.started && !dead)
         {
             switch (lookingAt.GetComponent<Rigidbody>().mass)
             {
@@ -210,7 +269,7 @@ public class PlayerController : MonoBehaviour
 
     public void SwitchSelectionLeft(InputAction.CallbackContext context)
     {
-        if(context.started)
+        if(context.started && !dead)
         {
             if (selectionActive)
             {
@@ -234,7 +293,7 @@ public class PlayerController : MonoBehaviour
 
     public void SwitchSelectionRight(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (context.started && !dead)
         {
             if (selectionActive)
             {
@@ -258,7 +317,7 @@ public class PlayerController : MonoBehaviour
 
     public void DropMetal(InputAction.CallbackContext context)
     {
-        if(context.started)
+        if(context.started && !dead)
         {
             RaycastHit hitInfo;
             Vector3 pos;
@@ -309,6 +368,7 @@ public class PlayerController : MonoBehaviour
     public void ReceiveDamage(int damage)
     {
         health -= damage;
+        playerAudioSource.Play();
         if (health <= 0)
         {
             health = 0;
@@ -359,7 +419,14 @@ public class PlayerController : MonoBehaviour
     {
         Time.timeScale = 0;
         deathUI.SetActive(true);
-        Destroy(this);
+        dead = true;
+    }
+
+    public void Win()
+    {
+        Time.timeScale = 0;
+        winUI.SetActive(true);
+        dead = true;
     }
 
     private void RotateGunUp()
@@ -377,6 +444,11 @@ public class PlayerController : MonoBehaviour
 
     private void HandleCamera()
     {
+        if (dead)
+        {
+            return;
+        }
+
         cameraPanValue = playerInput.actions["Look"].ReadValue<Vector2>();
 
         xRotation += cameraPanValue.y * xSensitivity;
@@ -393,6 +465,11 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement(float inventoryWeight)
     {
+        if (dead)
+        {
+            return;
+        }
+
         float appliedSpeed = movementSpeed - inventoryWeight;
         if(appliedSpeed <= 0)
         {
@@ -446,6 +523,11 @@ public class PlayerController : MonoBehaviour
             grabButtonScript.SetButton(false);
             lookingAt = null;
         }
+        else if (lookingAt == null)
+        {
+            grabButtonScript.SetButton(false);
+        }
+        Debug.Log(metalHit);
     }
 
     IEnumerator ShowBox(int position)

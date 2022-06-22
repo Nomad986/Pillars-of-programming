@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    private DataScript data;
     [Range(0, 6)] [SerializeField] private int globalPlatinumNumber;
     [SerializeField] private int globalGoldNumber;
     [SerializeField] private int globalSilverNumber;
@@ -24,6 +25,20 @@ public class Spawner : MonoBehaviour
 
     private void Awake()
     {
+        data = FindObjectOfType<DataScript>();
+
+        if (data == null)
+        {
+            globalPlatinumNumber = 1;
+            globalCopperNumber = 2;
+            globalGoldNumber = 2;
+            globalSilverNumber = 2;
+        }
+        else
+        {
+            CalculateBars();
+        }
+
         builder = terrain.GetComponent<NavMeshBuilder>();
 
         foreach(Transform transform in transforms)
@@ -161,6 +176,36 @@ public class Spawner : MonoBehaviour
         {
             //exception
             return false;
+        }
+    }
+
+    private void CalculateBars()
+    {
+        int allBars = data.GetBars();
+        int divided = allBars / 4;
+
+        if (divided >= 6)
+        {
+            globalPlatinumNumber = 6;
+            allBars -= 6;
+            globalGoldNumber = divided;
+            globalSilverNumber = divided;
+            globalCopperNumber = divided;
+            allBars -= divided * 3;
+            globalCopperNumber += allBars;
+        }
+        else if (divided >= 1)
+        {
+            globalPlatinumNumber = divided;
+            globalGoldNumber = divided;
+            globalSilverNumber = divided;
+            globalCopperNumber = divided;
+            allBars -= divided * 4;
+            globalCopperNumber += allBars;
+        }
+        else if (divided < 1)
+        {
+            globalPlatinumNumber = allBars;
         }
     }
 }

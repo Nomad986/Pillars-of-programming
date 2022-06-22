@@ -7,27 +7,23 @@ public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject[] spawnPositions;
-    private int numberOfEnemies = 3;
-    private List<int> used = new List<int>();
+    private int numberOfEnemies;
+    private DataScript data;
 
     private void Start()
     {
-        while(numberOfEnemies > 0)
-        {
-            int rand = Random.Range(0, numberOfEnemies);
+        data = FindObjectOfType<DataScript>();
 
-            if (!used.Contains(rand) &&
-                NavMesh.SamplePosition(spawnPositions[rand].transform.position, 
-                out NavMeshHit hit, 2f, NavMesh.AllAreas))
-            {
-                spawnPositions[rand].transform.position = hit.position;
-                Instantiate(enemyPrefab, spawnPositions[rand].transform, false);
-                used.Add(rand);
-                numberOfEnemies--;
-            }
+        if(data == null)
+        {
+            numberOfEnemies = 7;
+        }
+        else
+        {
+            numberOfEnemies = data.GeEnemies();
         }
 
-        /*for (int i = 0; i < spawnPositions.Length; i++)
+        for (int i = 0; i < numberOfEnemies; i++)
         {
             if (NavMesh.SamplePosition(spawnPositions[i].transform.position,
                 out NavMeshHit hit, 2f, NavMesh.AllAreas))
@@ -35,6 +31,6 @@ public class EnemySpawner : MonoBehaviour
                 spawnPositions[i].transform.position = hit.position;
                 Instantiate(enemyPrefab, spawnPositions[i].transform, false);
             }
-        }*/
+        }
     }
 }

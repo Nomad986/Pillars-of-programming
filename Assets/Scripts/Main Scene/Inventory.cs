@@ -3,12 +3,12 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
-    private float weight;
     private int goldNumber;
     private int silverNumber;
     private int platinumNumber;
     private int copperNumber;
 
+    //Number of metals in the inventory shown in UI
     [SerializeField] private Text goldText;
     [SerializeField] private Text silverText;
     [SerializeField] private Text copperText;
@@ -16,8 +16,6 @@ public class Inventory : MonoBehaviour
 
     private void Awake()
     {
-        weight = 0;
-
         goldNumber = 0;
         silverNumber = 0;
         platinumNumber = 0;
@@ -29,15 +27,9 @@ public class Inventory : MonoBehaviour
         SetMetalNumber(copperText, copperNumber);
     }
 
-    public float GetInventoryWeight()
-    { 
-        return weight; 
-    }
-
     public void IncreaseCopper()
     {
         copperNumber++;
-        weight += 0.5f;
         SetMetalNumber(copperText, copperNumber);
     }
 
@@ -51,7 +43,6 @@ public class Inventory : MonoBehaviour
         }
 
         copperNumber--;
-        weight -= 0.5f;
         SetMetalNumber(copperText, copperNumber);
         return true;
     }
@@ -59,7 +50,6 @@ public class Inventory : MonoBehaviour
     public void IncreaseSilver()
     {
         silverNumber++;
-        weight += 1f;
         SetMetalNumber(silverText, silverNumber);
     }
 
@@ -73,7 +63,6 @@ public class Inventory : MonoBehaviour
         }
 
         silverNumber--;
-        weight -= 1f;
         SetMetalNumber(silverText, silverNumber);
         return true;
     }
@@ -81,7 +70,6 @@ public class Inventory : MonoBehaviour
     public void IncreaseGold()
     {
         goldNumber++;
-        weight += 1.5f;
         SetMetalNumber(goldText, goldNumber);
     }
 
@@ -95,7 +83,6 @@ public class Inventory : MonoBehaviour
         }
         
         goldNumber--;
-        weight -= 1.5f;
         SetMetalNumber(goldText, goldNumber);
         return true;
     }
@@ -103,7 +90,6 @@ public class Inventory : MonoBehaviour
     public void IncreasePlatinum()
     {
         platinumNumber++;
-        weight += 2.5f;
         SetMetalNumber(platinumText, platinumNumber);
     }
 
@@ -117,7 +103,6 @@ public class Inventory : MonoBehaviour
         }
 
         platinumNumber--;
-        weight -= 2.5f;
         SetMetalNumber(platinumText, platinumNumber);
         return true;
     }
